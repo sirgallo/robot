@@ -1,0 +1,17 @@
+FROM node:18 as buildapi
+
+RUN apt-get update
+RUN apt-get install -y curl
+
+ENV HOME /home
+
+WORKDIR $HOME/api
+
+COPY moduleAlias.mjs \
+  ServerConfigurations.ts \ 
+  package.json \
+  package-lock.json \
+  gruntfile.cjs \
+  tsconfig.json ./
+
+RUN npm ci

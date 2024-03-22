@@ -1,0 +1,63 @@
+version: "3"
+
+x-variables:
+  common_api_settings: &common_api_settings
+    environment:
+      - NODE_ENV=docker
+      - NODE_OPTIONS="--max-old-space-size=4096"
+    networks:
+      api_layer:
+    restart: always
+  common_robot_settings: &common_robot_settings
+    <<: *common_api_settings
+    image: 'robot-img'
+    build:
+      context: .
+      dockerfile: ./robot/Dockerfile
+    ports:
+      - '1234'
+    healthcheck:
+      test: curl --fail http://localhost:1234/poll || kill 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
+  common_dummy_setting: &common_dummy_settings
+    <<: *common_api_settings
+    image: 'dummy-img'
+    build:
+      context: .
+      dockerfile: ./dummy/Dockerfile
+    ports:
+      - '2468'
+    healthcheck:
+      test: curl --fail http://localhost:2468/poll || kill 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+services:
+  robotproxy: 
+    image: robotproxy-img
+    hostname: ${HOSTNAME}
+    build:
+      context: .
+      dockerfile: ./lb/Dockerfile
+    volumes:
+      - $HOME/robot/certs/haproxy:/certs
+    ports: 
+      - '443:443'
+    networks:
+      api_layer:
+    depends_on:
+      - robot0
+      - dummy0
+  robot0:
+    <<: *common_robot_settings
+    container_name: robot0
+  dummy0:
+    <<: *common_dummy_settings
+    container_name: dummy0
+
+networks:
+  api_layer:
+    driver: bridge
