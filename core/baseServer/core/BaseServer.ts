@@ -9,7 +9,6 @@ import compression from 'compression';
 import helmet from 'helmet';
 
 import { LogProvider } from '@core/providers/LogProvider';
-import { ServerOpts, DEFAULT_SERVER_OPTS } from '@core/baseServer/core/types/Server';
 import { PollRoute } from '@core/baseServer/routes/PollRoute';
 import { routeMappings } from '@core/baseServer/configs/RouteMappings';
 import { extractErrorMessage } from '@core/utils/Utils';

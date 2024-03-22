@@ -5,8 +5,8 @@ export type Etcd3PrefixedKey<K extends string, PRF = unknown> =
   PRF extends string ? `${PRF}/${K}` : K;
 
 interface __baseEtcModel<V, K extends string, PRF = unknown> { 
-  KeyType: Etcd3PrefixedKey<K, PRF>
-  ValueType: InferType<V>
+  KeyType: Etcd3PrefixedKey<K, PRF>;
+  ValueType: InferType<V>;
 }
 
 export type EtcdModel<V, K extends string, PRF = unknown> =
