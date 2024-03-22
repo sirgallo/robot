@@ -112,8 +112,6 @@ export abstract class BaseServer<T extends string> {
       this.app.use(e.json());
       this.app.use(e.urlencoded({ extended: false }));
       this.app.use(cookieParser());
-
-      console.log('static files dir:', this.staticFilesDir);
       this.app.use(e.static(this.staticFilesDir));
       this.app.use(compression());
       this.app.use(helmet());
